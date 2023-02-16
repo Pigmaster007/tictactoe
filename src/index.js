@@ -1,5 +1,4 @@
 const table = document.getElementsByTagName('td');
-let counter = 0;
 let playerWinCounter = 0;
 let computerWinCounter = 0;
 let tieCounter = 0;
@@ -10,12 +9,10 @@ for (let i = 0; i<table.length; i++) {
     table[i].addEventListener('click', e => {
         if(table[i].innerText == '') {
             table[i].innerText = 'X'
+            setTimeout(compMuve, 250);  //computer move here
+            setTimeout (mainCheck, 501);
+            setTimeout(tieTimer, 600);
         }
-
-        setTimeout(compMuve, 250);  //computer move here
-        setTimeout (mainCheck, 501);
-        counter++;
-        setTimeout(tieTimer, 600);
     })
 }
 /*Add 'X' to game field ends*/
@@ -39,9 +36,9 @@ const alarmWindow = document.getElementById('alarm');
 
 alarmWindow.addEventListener('click', e =>{
     alarmWindow.style.display = 'none'
+    alarmWindow.innerHTML = `<h1>` + `PRESS TO START` + `</h1>`;
     for (let i=0; i<table.length; i++) {
         table[i].innerText = ''
-        counter = 0;
     }
 })
 /* window with "press to start statement" ends*/
@@ -64,29 +61,43 @@ let j = getRndInteger(0, table.length);
 /* Computer moves code ends*/
 
 /* Game logic starts */
-// function tieTimer () {
-//     if ((alarmWindow.innerText != 'Player WON!')&&
-//         (alarmWindow.innerText != 'Computer WON!')
-//         &&(counter == 5)) {
-//         alarmWindow.style.display = 'flex'
-//         alarmWindow.innerHTML = `<h1>` + `TIE!` + `</h1>`;
-//         tieCounter++;
-//         document.getElementById('tie').innerText = 'Tie' + '(' + tieCounter +')';
-//     }
-// }
 
 function tieTimer () {
     if ((alarmWindow.innerText != 'Player WON!')&&
         (alarmWindow.innerText != 'Computer WON!')
         &&(([...table].filter((item) => {
-            return item.innerText == ''
-        })) == false)) {
+            item.innerText != ''
+            return table.length
+        })) == '9')) {
         alarmWindow.style.display = 'flex'
         alarmWindow.innerHTML = `<h1>` + `TIE!` + `</h1>`;
         tieCounter++;
         document.getElementById('tie').innerText = 'Tie' + '(' + tieCounter +')';
     }
 }
+
+
+// let newTable = []
+
+
+// function tieTimer () {
+    
+//     newTable = [...table].filter((item) => {
+//         return item.innerText != ''
+//     })
+            
+//     if ((alarmWindow.innerText != 'Player WON!')&&
+//     (alarmWindow.innerText != 'Computer WON!')){
+
+//         if (newTable.length == 9)
+//         {
+//             alarmWindow.style.display = 'flex'
+//             alarmWindow.innerHTML = `<h1>` + `TIE!` + `</h1>`;
+//             tieCounter++;
+//             document.getElementById('tie').innerText = 'Tie' + '(' + tieCounter +')';
+//         }
+//     }
+// }
 
 
 function checkForWin (a, b, c) {
@@ -108,6 +119,7 @@ function checkForWin (a, b, c) {
 }
 
 function mainCheck () {
+    
         checkForWin(0, 1, 2),
         checkForWin(3, 4, 5),
         checkForWin(6, 7, 8),
