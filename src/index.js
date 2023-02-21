@@ -1,4 +1,5 @@
-const table = document.getElementsByTagName('td');
+const arr = document.getElementsByTagName('td');
+const table = [...arr];
 let playerWinCounter = 0;
 let computerWinCounter = 0;
 let tieCounter = 0;
@@ -8,10 +9,10 @@ let tieCounter = 0;
 for (let i = 0; i<table.length; i++) {
     table[i].addEventListener('click', e => {
         if(table[i].innerText == '') {
-            table[i].innerText = 'X'
-            setTimeout(compMuve, 250);  //computer move here
-            setTimeout (mainCheck, 501);
-            setTimeout(tieTimer, 600);
+            table[i].innerText = 'X';
+            setTimeout(compMuve, 200);  //computer move here
+            setTimeout (checkForWin, 300); //checking combinations
+            setTimeout(tieTimer, 350);  //TIE check
         }
     })
 }
@@ -44,18 +45,24 @@ alarmWindow.addEventListener('click', e =>{
 /* window with "press to start statement" ends*/
 
 /* Computer moves code starts*/
+function emptyCellsCheck () {
+    return table.some(el => el.innerText === '');
+}
+
 function compMuve () {
-function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
-  }
+        function getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min) ) + min;
+        }
 
 let j = getRndInteger(0, table.length);
 
     if (table[j].innerText == '') {
         table[j].innerText = 'O'
     } else {
-        j = getRndInteger(0, table.length)
-        compMuve()
+        j = getRndInteger(0, table.length)    
+        if ((emptyCellsCheck())==true) {
+            compMuve()
+        }
     }
 }
 /* Computer moves code ends*/
@@ -65,10 +72,7 @@ let j = getRndInteger(0, table.length);
 function tieTimer () {
     if ((alarmWindow.innerText != 'Player WON!')&&
         (alarmWindow.innerText != 'Computer WON!')
-        &&(([...table].filter((item) => {
-            item.innerText != ''
-            return table.length
-        })) == '9')) {
+        &&(emptyCellsCheck()) == false) {
         alarmWindow.style.display = 'flex'
         alarmWindow.innerHTML = `<h1>` + `TIE!` + `</h1>`;
         tieCounter++;
@@ -76,57 +80,47 @@ function tieTimer () {
     }
 }
 
+const winLines = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], //horisontal lines
+                   [0, 3, 6], [1, 4, 7], [2, 5, 8], //vertical lines
+                   [0, 4, 8], [2, 4, 6] ] //diagonal lines
 
-// let newTable = []
+function winCheck(player) {
+     return winLines.some(line => line.every(cell => table[cell].innerText === player));
+}
 
+function mainCheck () {
+    let a = checkForWin(0, 1, 2);
+    let b = checkForWin(3, 4, 5);
+    let c = checkForWin(6, 7, 8);
+    let d = checkForWin(0, 3, 6);
+    let e = checkForWin(1, 4, 7);
+    let f = checkForWin(2, 5, 8);
+    let g = checkForWin(0, 4, 8);
+    let h = checkForWin(2, 4, 6);
+    let check = [a, b, c, d, e, f, g, h];
 
-// function tieTimer () {
-    
-//     newTable = [...table].filter((item) => {
-//         return item.innerText != ''
-//     })
-            
-//     if ((alarmWindow.innerText != 'Player WON!')&&
-//     (alarmWindow.innerText != 'Computer WON!')){
+    for (let i = 0; i<check.length; i++) {
+        if ((check[i]) == true) {
+            break;
+        }
+    }
+}
 
-//         if (newTable.length == 9)
-//         {
-//             alarmWindow.style.display = 'flex'
-//             alarmWindow.innerHTML = `<h1>` + `TIE!` + `</h1>`;
-//             tieCounter++;
-//             document.getElementById('tie').innerText = 'Tie' + '(' + tieCounter +')';
-//         }
-//     }
-// }
-
-
-function checkForWin (a, b, c) {
-    if ((table[a].innerText == table[b].innerText)&&
-        (table[b].innerText == table[c].innerText)&&
-        (table[c].innerText == 'X')) {
+function checkForWin () {
+    if ((winCheck('X'))== true) {
         alarmWindow.style.display = 'flex'
         alarmWindow.innerHTML = `<h1>` + `Player WON!` + `</h1>`;
         playerWinCounter++;
         document.getElementById('firstWin').innerText = 'Player' + '(' + playerWinCounter +')';  
-    } else if ((table[a].innerText == table[b].innerText)&&
-               (table[b].innerText == table[c].innerText)&&
-               (table[c].innerText == 'O')) {
+        return true;
+    } else if ((winCheck('O'))== true) {
         alarmWindow.style.display = 'flex'
         alarmWindow.innerHTML = `<h1>` + `Computer WON!` + `</h1>`;
         computerWinCounter++; 
         document.getElementById('secondWin').innerText = 'Computer' + '(' + computerWinCounter + ')';
+        return true;
+    } else {
+        return false;
     }
-}
-
-function mainCheck () {
-    
-        checkForWin(0, 1, 2),
-        checkForWin(3, 4, 5),
-        checkForWin(6, 7, 8),
-        checkForWin(0, 3, 6),
-        checkForWin(1, 4, 7),
-        checkForWin(2, 5, 8),
-        checkForWin(0, 4, 8),
-        checkForWin(2, 4, 6)
 }
 /* Game logic ends */
