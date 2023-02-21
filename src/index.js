@@ -88,24 +88,6 @@ function winCheck(player) {
      return winLines.some(line => line.every(cell => table[cell].innerText === player));
 }
 
-function mainCheck () {
-    let a = checkForWin(0, 1, 2);
-    let b = checkForWin(3, 4, 5);
-    let c = checkForWin(6, 7, 8);
-    let d = checkForWin(0, 3, 6);
-    let e = checkForWin(1, 4, 7);
-    let f = checkForWin(2, 5, 8);
-    let g = checkForWin(0, 4, 8);
-    let h = checkForWin(2, 4, 6);
-    let check = [a, b, c, d, e, f, g, h];
-
-    for (let i = 0; i<check.length; i++) {
-        if ((check[i]) == true) {
-            break;
-        }
-    }
-}
-
 function checkForWin () {
     if ((winCheck('X'))== true) {
         alarmWindow.style.display = 'flex'
